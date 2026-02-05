@@ -22,6 +22,9 @@ socket.on("connect", () => {
 
   // TX 送信
   broadcast({ type: "TX", data: txs, nodeId: globals.PORT });
-
   console.log(`TXs sent:`, txs);
+
+  // 送信後にソケット切断
+  socket.disconnect();
+  console.log("Socket disconnected, exiting...");
 });

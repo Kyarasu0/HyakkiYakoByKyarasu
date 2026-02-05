@@ -1,9 +1,8 @@
 const calculateHash = require('./calculateHash');
-const DIFFICULTY = 2;
 const globals = require('./env');
 
-function powMining(block) {
-  while (!block.hash.startsWith("0".repeat(DIFFICULTY)) && !globals.STOP_MINING && globals.MINING) {
+async function powMining(block) {
+  while (!block.hash.startsWith("0".repeat(globals.DIFFICULTY)) && !globals.STOP_MINING && globals.MINING) {
     block.nonce++;
     block.hash = calculateHash(
       block.index,
@@ -14,11 +13,19 @@ function powMining(block) {
     );
 
     console.log(`nonce: ${block.nonce}, hash: ${block.hash}`);
+
+    if (block.hash.startsWith("0".repeat(globals.DIFFICULTY))) {
+      console.log("========== Block Found ==========");
+      console.log(`nonce: ${block.nonce}, hash: ${block.hash}`);
+      console.log("=================================");
+      return block;
+    }
+
+    await new Promise(resolve => setImmediate(resolve));
   }
-  console.log("========== Block Found ==========");
-  console.log(`nonce: ${block.nonce}, hash: ${block.hash}`);
-  console.log("=================================");
-  return block;
+  // ここに来た = 中断
+  console.log("⛏ mining aborted");
+  return null;
 }
 
 module.exports = powMining;

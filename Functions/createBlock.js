@@ -3,7 +3,7 @@ const Block = require('./Block');
 const loadBlockchain = require('./loadBlockchain');
 const globals = require('./env');
 
-function createBlock(txs) {
+async function createBlock(txs) {
     // マイニングを中断
     if (globals.STOP_MINING) {
       console.log("⛏ mining stopped");
@@ -19,7 +19,7 @@ function createBlock(txs) {
     let hash = "";
 
     let block = new Block(index, prev.hash, timestamp, txs, nonce, hash);
-    return powMining(block);
+    return await powMining(block);
 }
 
 module.exports = createBlock;

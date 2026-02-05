@@ -1,5 +1,5 @@
-const calculateHash = require("./calculateHash"); 
-const DIFFICULTY = 2;
+const calculateHash = require("./calculateHash");
+const globals = require('./env');
 
 function isValidBlock(newBlock, blockchain) {
   const lastBlock = blockchain[blockchain.length - 1];
@@ -37,7 +37,7 @@ function isValidBlock(newBlock, blockchain) {
   }
 
   // 4. PoW チェック
-  if (!newBlock.hash.startsWith("0".repeat(DIFFICULTY))) {
+  if (!newBlock.hash.startsWith("0".repeat(globals.DIFFICULTY))) {
     console.log(`${newBlock.hash}: invalid proof of work (Difficulty = 3)`);
     return false;
   }else{

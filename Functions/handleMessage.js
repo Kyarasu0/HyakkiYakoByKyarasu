@@ -12,12 +12,23 @@ const MESSAGE_TYPE = {
 
 globals.STOP_MINING = false;
 
-function handleMessage(message) {
+async function handleMessage(message) {
   let blockchain = loadBlockchain();
   switch (message.type) {
     case MESSAGE_TYPE.TX:
       // すでに計算していたらやめる
       if (globals.MINING) return;
+
+      // blockchain内に同じTXがあれば処理しない
+      if (blockchain.some(block =>
+            block.txs.some(tx =>
+              message.data.some(mtx => mtx.timestamp === tx.timestamp)
+            )
+          )) {
+        console.log("TX already included, ignoring");
+        return;
+      }
+
 
       // 計算開始
       globals.MINING = true;
@@ -30,7 +41,12 @@ function handleMessage(message) {
       // 2. マイニングスタート(見つけたものはblockへ)
       console.log(`[${globals.PORT}] start mining`);
       // message.dataにはtxが入っていると仮定
-      const block = createBlock(message.data);
+      const block = await createBlock(message.data);
+      if (!block) {
+        console.log("Mining was aborted, block discarded");
+        globals.MINING = false;
+        return;
+      }
       // 3. blockchainにblockを追加してjsonに保存
       // 既存チェーンにマイニング結果を追加
       blockchain.push(block);
@@ -66,6 +82,7 @@ function handleMessage(message) {
 
       // 中断フラグ解除
       globals.STOP_MINING = false;
+      globals.MINING = false;
       break;
 
   }
