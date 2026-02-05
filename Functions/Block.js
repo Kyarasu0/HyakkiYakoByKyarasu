@@ -8,3 +8,5 @@ class Block {
     this.hash = hash;
   }
 }
+
+module.exports = Block;

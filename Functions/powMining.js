@@ -1,7 +1,9 @@
-const DIFFICULTY = 3;
+const calculateHash = require('./calculateHash');
+const DIFFICULTY = 2;
+const globals = require('./env');
 
-export function powMining(block) {
-  while (!block.hash.startsWith("0".repeat(DIFFICULTY))) {
+function powMining(block) {
+  while (!block.hash.startsWith("0".repeat(DIFFICULTY)) && !globals.STOP_MINING && globals.MINING) {
     block.nonce++;
     block.hash = calculateHash(
       block.index,

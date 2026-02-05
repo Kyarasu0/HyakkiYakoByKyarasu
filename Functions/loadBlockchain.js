@@ -1,8 +1,27 @@
-export function loadBlockchain() {
-    const path = `../Chains/chain_${PORT}.json`;
+const fs = require("fs");
+const Block = require('./Block');
+const globals = require('./env');
+const saveChain = require('./saveChain');
 
+function loadBlockchain() {
+    const path = `./Chains/chain_${globals.PORT}.json`;
+
+    // ファイルがなければ作る
     if (!fs.existsSync(path)) {
-        throw new Error("chain file not found");
+        console.log("chain file not found, creating genesis block...");
+
+        // ジェネシスブロック
+        const genesis = new Block(
+            0,          // index
+            "0",        // prevHash
+            Date.now(), // timestamp
+            [],         // txs
+            0,          // nonce
+            "0"         // hash
+        );
+
+        saveChain([genesis]);
+        return [genesis];
     }
 
     const data = JSON.parse(fs.readFileSync(path));

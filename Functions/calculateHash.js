@@ -6,3 +6,5 @@ function calculateHash(index, prevHash, timestamp, txs, nonce) {
     .update(index + prevHash + timestamp + JSON.stringify(txs) + nonce)
     .digest("hex");
 }
+
+module.exports = calculateHash;

@@ -1,16 +1,17 @@
 const handleMessage = require('./handleMessage');
+const globals = require('./env');
 
-export function initSocket(sockets, socket, nodeId) {
-    sockets.push(socket);
+function initSocket(socket) {
+    globals.SOCKETS.push(socket);
 
     socket.on("message", msg => {
-        console.log(`[${nodeId}] received ${msg.type} from ${msg.nodeId}`);
+        console.log(`[${globals.PORT}] received ${msg.type} from ${msg.nodeId}`);
         handleMessage(msg);
     });
 
     socket.on("disconnect", () => {
-        const i = sockets.indexOf(socket);
-        if (i !== -1) sockets.splice(i, 1);
+        const i = globals.SOCKETS.indexOf(socket);
+        if (i !== -1) globals.SOCKETS.splice(i, 1);
     });
 }
 

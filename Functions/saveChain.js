@@ -1,7 +1,8 @@
 const fs = require("fs");
+const globals = require('./env');
 
-export function saveChain(blockchain) {
-  fs.writeFileSync(`../chain/chain_${PORT}.json`, JSON.stringify(blockchain, null, 2));
+function saveChain(blockchain) {
+  fs.writeFileSync(`./Chains/chain_${globals.PORT}.json`, JSON.stringify(blockchain, null, 2));
 }
 
 module.exports = saveChain;
